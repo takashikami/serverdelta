@@ -1,0 +1,3 @@
+rsa1:
+  keys:
+    - /home/kami/workspace/docker/vagrant_docker_sshd/ssh/id_rsa

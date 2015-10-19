@@ -1,0 +1,12 @@
+<body onLoad="document.form.cmd.focus()">
+<form action="/" method="post" name="form">
+  <input type="text" name="cmd" size="40">
+  <input type="submit">
+</form>
+
+<div><%= now %></div>
+<% out.each do |k,v| %>
+    <hr><%= k + '('+"%0.3f"%bench[k]+'s)' %><br>
+    <pre><%= v %></pre>
+<% end %>
+</body>
