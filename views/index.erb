@@ -6,7 +6,7 @@
 
 <div><%= now %></div>
 <% out.each do |k,v| %>
-    <hr><%= k + '('+"%0.3f"%bench[k]+'s)' %><br>
+    <hr><%= k+' '+cmd %><br>
     <pre><%= v %></pre>
 <% end %>
 </body>

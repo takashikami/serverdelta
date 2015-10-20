@@ -1,34 +1,23 @@
 #
-require 'sinatra/base'
-require 'sinatra/reloader'
-require 'net/ssh'
 require 'yaml'
-require 'benchmark'
+require 'net/ssh'
 
-class Delta < Sinatra::Base
-  set :bind, '0.0.0.0'
-
-  get '/' do
-    erb :index, locals: {out:{}, now:'', bench:0.0}
-  end
-
-  post '/' do
-    out = {}
-    bench = {}
+class Delta
+  def self.delta(cmd)
     hosts = YAML.load_file('./conf/hosts.yaml')
     auths = YAML.load_file('./conf/auths.yaml')
+    out = {}
     hosts.each do |host|
       hostname = host['ipaddr']
       username = host['user']
-      auth=auths[host['auth']].inject({}){|r,i|r[i[0].to_sym]=i[1];r}
+      auth = auths[host['auth']].inject({}){|r,i|r[i[0].to_sym]=i[1];r}
       p [hostname, username, auth]
-      bench[hostname] = Benchmark.realtime do
-        out[hostname] = Net::SSH.start(hostname,username, auth){|ssh|ssh.exec!(params[:cmd])}
-      end
+      out[hostname] = Net::SSH.start(hostname,username,auth){|ssh|ssh.exec!(cmd)}
     end
-    now = Time.now.strftime('%Y-%m-%d %H:%M:%S')
-    erb :index, locals: {out: out, now: now, bench: bench}
+    out
   end
-
-  run! if app_file == $0
 end
+
+Delta.delta(ARGV.join ' ').each_pair do |k,v|
+  puts "======== #{k} ========\n#{v}\n"
+end if File.basename(__FILE__) == File.basename($0)
