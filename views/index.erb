@@ -5,8 +5,8 @@
 </form>
 
 <div><%= now %></div>
-<% out.each do |k,v| %>
-    <hr><%= k+' '+cmd %><br>
-    <pre><%= v %></pre>
+<% res.each do |re| %>
+    <hr><%= re[:hostname]+' '+re[:cmd] %><br>
+    <pre><%= re[:out] %></pre>
 <% end %>
 </body>
