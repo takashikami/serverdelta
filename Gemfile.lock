@@ -3,6 +3,7 @@ GEM
   specs:
     backports (3.6.6)
     coderay (1.1.0)
+    diff-lcs (1.2.5)
     method_source (0.8.2)
     multi_json (1.11.2)
     net-ssh (3.0.1)
@@ -33,6 +34,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  diff-lcs
   net-ssh
   pry
   sinatra

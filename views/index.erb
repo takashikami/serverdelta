@@ -4,9 +4,9 @@
   <input type="submit">
 </form>
 
-<div><%= now %></div>
+<div><%= now + " " + cmd %></div>
 <% res.each do |re| %>
-    <hr><%= re[:hostname]+' '+re[:cmd] %><br>
-    <pre><%= re[:out] %></pre>
+    <hr><%= re[:hostname] %><br>
+    <pre><%= re[:dsp].join("\n") %></pre>
 <% end %>
 </body>

@@ -1,27 +1,34 @@
 #
 require 'yaml'
 require 'net/ssh'
+require 'diff/lcs'
 
 class Delta
   def self.delta(cmd)
     hosts = YAML.load_file('./conf/hosts.yaml')
     auths = YAML.load_file('./conf/auths.yaml')
     res = []
-    hosts.each do |host|
+    hosts.each_with_index do |host, idx|
       hostname = host['ipaddr']
       username = host['user']
       auth = auths[host['auth']].inject({}){|r,i|r[i[0].to_sym]=i[1];r}
-      p [hostname, username, auth]
-      res << {
-          :cmd => cmd,
-          :hostname => hostname,
-          :out => Net::SSH.start(hostname,username,auth){|ssh|ssh.exec!(cmd)}
-      }
+      # p [hostname, username, auth]
+      out = Net::SSH.start(hostname,username,auth){|ssh|ssh.exec!(cmd).split("\n")}
+      dsp = out
+      d = nil
+      if idx > 0
+        dsp = []
+        # dsp << "========== #{hostname} =========="
+        d = Diff::LCS.diff(res[0][:out],out)
+        d.each{|dd|dd.each{|ddd|dsp << ddd.to_a.join(' ')}}
+      end
+      res << {idx: idx, d: d, cmd: cmd, hostname: hostname, out: out, dsp: dsp}
     end
     res
   end
 end
 
-Delta.delta(ARGV.join ' ').each do |re|
-  puts "======== [#{re[:hostname]}] #{re[:cmd]} ========\n#{re[:out]}\n"
+Delta.delta(ARGV.join ' ').each_with_index do |re, i|
+  puts ARGV.unshift(Time.now.to_s).join(' ') if i == 0
+  puts "======== [#{re[:hostname]}] ========\n#{re[:dsp].join("\n")}\n"
 end if File.basename(__FILE__) == File.basename($0)

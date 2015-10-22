@@ -8,7 +8,7 @@ class DeltaWeb < Sinatra::Base
   set :bind, '0.0.0.0'
 
   get '/' do
-    erb :index, locals: {out:{}, now:'', cmd:''}
+    erb :index, locals: {res:[], now:'', cmd:''}
   end
 
   post '/' do
