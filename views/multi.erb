@@ -1,5 +1,5 @@
 <html><head><title>MULTI</title></head>
-<body onLoad="document.form.cmd.focus()">
+<body onLoad="document.form.cmds.focus()">
 <a href="/">SINGLE</a><br>
 
 <form action="/multi" method="post" name="form">
@@ -7,11 +7,12 @@
   <input type="submit">
 </form>
 
-<table border="1" cellspacing="0">
+<table border="1" cellspacing="0" cellpadding="6">
 <% ress.each do |res| %>
   <tr>
   <% res.each do |re| %>
-    <td><%= re[:cnt] || re[:cmd] %></td>
+    <% cnt = "+#{re[:cnt]['+']} -#{re[:cnt]['-']}" if re[:cnt] %>
+    <td><%= cnt || re[:cmd] %></td>
   <% end %>
   </tr>
 <% end if ress %>
