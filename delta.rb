@@ -12,17 +12,16 @@ class Delta
       hostname = host['ipaddr']
       username = host['user']
       auth = auths[host['auth']].inject({}){|r,i|r[i[0].to_sym]=i[1];r}
-      # p [hostname, username, auth]
       out = Net::SSH.start(hostname,username,auth){|ssh|ssh.exec!(cmd).split("\n")}
       dsp = out
       d = nil
       if idx > 0
         dsp = []
-        # dsp << "========== #{hostname} =========="
+        cnt = {'+'=>0, '-'=>0}
         d = Diff::LCS.diff(res[0][:out],out)
-        d.each{|dd|dd.each{|ddd|dsp << ddd.to_a.join(' ')}}
+        d.each{|dd|dd.each{|ddd|dsp << ddd.to_a.join(' '); cnt[ddd.to_a.first]+=1}}
       end
-      res << {idx: idx, d: d, cmd: cmd, hostname: hostname, out: out, dsp: dsp}
+      res << {idx:idx, d:d, cmd:cmd, hostname:hostname, out:out, dsp:dsp, cnt:cnt}
     end
     res
   end

@@ -1,0 +1,20 @@
+<html><head><title>MULTI</title></head>
+<body onLoad="document.form.cmd.focus()">
+<a href="/">SINGLE</a><br>
+
+<form action="/multi" method="post" name="form">
+  <textarea name="cmds" rows="4" cols="40"></textarea>
+  <input type="submit">
+</form>
+
+<table border="1" cellspacing="0">
+<% ress.each do |res| %>
+  <tr>
+  <% res.each do |re| %>
+    <td><%= re[:cnt] || re[:cmd] %></td>
+  <% end %>
+  </tr>
+<% end if ress %>
+</table>
+
+</body></html>
